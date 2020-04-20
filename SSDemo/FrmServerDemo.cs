@@ -1,4 +1,5 @@
-﻿using SSDemo.Controller;
+﻿using SSDemo.Config;
+using SSDemo.Controller;
 using SSDemo.Dialog;
 using SSDemo.Model;
 using SSDemo.Util;
@@ -87,7 +88,15 @@ namespace SSDemo
             if (string.IsNullOrEmpty(this.txtCommand.Text)) return;
             AddConsole("Send", this.txtCommand.Text);
             // SendCommand();
-            server.SendMessage(this.txtCommand.Text.Trim());
+            if (Configs.Type == "Server")
+            {
+                server.SendMessage(this.txtCommand.Text.Trim());
+            }
+            else
+            {
+                client.SendMessage(this.txtCommand.Text.Trim());
+            }
+
             AddHis();
         }
         private void AddConsole(string type, string content)
@@ -152,17 +161,39 @@ namespace SSDemo
         }
 
         private SServer server { get; set; }
+        private SClient client { get; set; }
 
         private void FrmServerDemo_Load(object sender, EventArgs e)
         {
             FrmPort frm = new FrmPort();
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                SServer.MessageReceiveEvent -= Server_MessageReceiveEvent;
-                SServer.MessageReceiveEvent += Server_MessageReceiveEvent;
-                server = new SServer(frm.Port);
+                try
+                {
+                    if (Configs.Type == "Server")
+                    {
+                        SServer.MessageReceiveEvent -= Server_MessageReceiveEvent;
+                        SServer.MessageReceiveEvent += Server_MessageReceiveEvent;
+                        server = new SServer();
+                    }
+                    else
+                    {
+                        SClient.MessageReceiveEvent -= Server_MessageReceiveEvent;
+                        SClient.MessageReceiveEvent += Server_MessageReceiveEvent;
+                        client = new SClient();
+                    }
+                    ShowCommand();
 
-                ShowCommand();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("ERROR:" + ex.ToString());
+                    this.Close();
+                }
+
+
+
+
 
             }
             else
@@ -179,7 +210,8 @@ namespace SSDemo
 
         private void FrmServerDemo_FormClosing(object sender, FormClosingEventArgs e)
         {
-            server.Dispose();
+            server?.Dispose();
+            client?.Dispose();
         }
     }
 }

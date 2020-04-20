@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSDemo.Config;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,16 +16,50 @@ namespace SSDemo.Dialog
         {
             InitializeComponent();
         }
-        public int Port
+     
+        private void btnOK_Click(object sender, EventArgs e)
         {
-            get
+            switch (cmbEncoding.Text)
             {
-                return (int)numericUpDown1.Value;
+                case "GB2312":
+                    Configs.Encoding = Encoding.GetEncoding("gb2312");
+                    break;
+                case "ASCII":
+                    Configs.Encoding = Encoding.ASCII;
+                    break;
+                case "UTF8":
+                    Configs.Encoding = Encoding.UTF8;
+                    break;
+                case "Unicode":
+                    Configs.Encoding = Encoding.Unicode;
+                    break;
             }
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
+
+            Configs.IP = this.txtIP.Text.Trim();
+            Configs.Port = (int)this.numPort.Value;
+
+            if (rbServer.Checked)
+            {
+                Configs.Type = "Server";
+            }
+            else
+            {
+                Configs.Type = "Client";
+            }
+
+
+
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void FrmPort_Load(object sender, EventArgs e)
+        {
+            cmbEncoding.Items.Clear();
+            cmbEncoding.Items.Add("GB2312");
+            cmbEncoding.Items.Add("ASCII");
+            cmbEncoding.Items.Add("UTF8");
+            cmbEncoding.Items.Add("Unicode");
+            cmbEncoding.Text = "GB2312";
         }
     }
 }

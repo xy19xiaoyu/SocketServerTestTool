@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\Configs.cs" />
     <Compile Include="Controller\CommandController.cs" />
     <Compile Include="Dialog\FrmPort.cs">
       <SubType>Form</SubType>
@@ -63,6 +64,7 @@
     <Compile Include="Model\Command.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SClient.cs" />
     <Compile Include="SServer.cs" />
     <Compile Include="Util\Extends.cs" />
     <EmbeddedResource Include="Dialog\FrmPort.resx">

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSDemo.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,11 +17,11 @@ namespace SSDemo
         public static event MessageReceive MessageReceiveEvent;
         private Thread myThread { get; set; }
         private Thread receiveThread { get; set; }
-        public SServer(int port)
+        public SServer()
         {
-            IPAddress ip = IPAddress.Parse("127.0.0.1");
+            IPAddress ip = IPAddress.Parse(Configs.IP);
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            serverSocket.Bind(new IPEndPoint(ip, port));  //绑定IP地址：端口 
+            serverSocket.Bind(new IPEndPoint(ip, Configs.Port));  //绑定IP地址：端口 
             serverSocket.Listen(10);    //设定最多10个排队连接请求 
             MessageReceiveEvent?.Invoke($"启动监听{serverSocket.LocalEndPoint.ToString()}成功");
             //通过Clientsoket发送数据 
@@ -75,7 +76,7 @@ namespace SSDemo
                     int receiveNumber = myClientSocket.Receive(result);
                     if (receiveNumber > 0)
                     {
-                        var content = Encoding.GetEncoding("gb2312").GetString(result);
+                        var content = Configs.Encoding.GetString(result);
                         MessageReceiveEvent?.Invoke(content);
                     }
 
@@ -102,7 +103,7 @@ namespace SSDemo
                 {
                     if (enableClient[i].Connected)
                     {
-                        enableClient[i].Send(Encoding.GetEncoding("gb2312").GetBytes(cmd));
+                        enableClient[i].Send(Configs.Encoding.GetBytes(cmd));
                     }
 
                 }
